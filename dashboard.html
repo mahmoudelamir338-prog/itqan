@@ -19,7 +19,7 @@
       </a>
       <nav class="main-nav">
         <a href="courses.html">المساقات</a>
-        <a href="dashboard.html" class="active" data-protected="true">لوحة التحكم</a>
+        <a href="dashboard.html" class="active">لوحة التحكم</a>
         <a href="login.html">تسجيل الدخول</a>
         <a href="signup.html" class="btn primary">حساب جديد</a>
         <button class="icon-btn" id="toggle-theme" title="الوضع الليلي">🌙</button>
@@ -39,42 +39,52 @@
   </footer>
 
   <script type="module">
-    import { guardRole, getCurrentUser, logout, restoreThemePreference } from './assets/js/auth.js';
+    import { restoreThemePreference } from './assets/js/auth.js';
 
     restoreThemePreference();
-    // منع الدخول لغير المالك
-    guardRole('owner');
 
     const content = document.getElementById('content');
-    const user = getCurrentUser();
-    if (!user) {
-      content.innerHTML = '<div class="card">الرجاء تسجيل الدخول</div>';
-    } else {
+    const DASH_HASH = 'h_506210108'; // hash لـ كلمة المرور Ma@0100166
+
+    function simpleHash(str) {
+      let h = 0;
+      for (let i = 0; i < str.length; i++) {
+        h = (h << 5) - h + str.charCodeAt(i);
+        h |= 0;
+      }
+      return 'h_' + Math.abs(h);
+    }
+
+    function renderDashboard() {
       content.innerHTML = `
         <div class="grid grid-3">
           <div class="card">
-            <h2>بيانات الحساب</h2>
-            <p>الاسم: ${user.name}</p>
-            <p>الدور: ${user.role}</p>
-            <p>رقم الموبايل: ${user.phone || '—'}</p>
-            <button id="logout" class="btn danger mt-2">خروج</button>
+            <h2>الوصول مؤمّن</h2>
+            <p>تم فتح لوحة التحكم باستخدام كلمة المرور.</p>
+            <button id="lock" class="btn danger mt-2">قفل لوحة التحكم</button>
           </div>
-          <div class="card">
+          <div class="card" id="courses-card">
             <h2>إدارة المساقات</h2>
             <p>إضافة/تعديل/حذف المساقات والوحدات والدروس.</p>
             <div class="actions">
-              <button class="btn">إضافة مساق</button>
-              <button class="btn">تعديل مساق</button>
-              <button class="btn danger">حذف مساق</button>
+              <button class="btn" id="add-course">إضافة مساق</button>
+              <button class="btn" id="edit-course">تعديل مساق</button>
+              <button class="btn danger" id="delete-course">حذف مساق</button>
+            </div>
+            <div class="mt-2"><strong>المساقات الحالية:</strong>
+              <ul id="courses-list" class="mt-1"></ul>
             </div>
           </div>
-          <div class="card">
+          <div class="card" id="users-card">
             <h2>إدارة المستخدمين</h2>
             <p>عرض وحظر وإلغاء حظر المستخدمين، ترقية/تغيير الأدوار.</p>
             <div class="actions">
-              <button class="btn">عرض المستخدمين</button>
-              <button class="btn">تغيير دور</button>
-              <button class="btn danger">حظر مستخدم</button>
+              <button class="btn" id="list-users">عرض المستخدمين</button>
+              <button class="btn" id="change-role">تغيير دور</button>
+              <button class="btn danger" id="ban-user">حظر مستخدم</button>
+            </div>
+            <div class="mt-2"><strong>المستخدمون (قراءة فقط):</strong>
+              <ul id="users-list" class="mt-1"></ul>
             </div>
           </div>
           <div class="card">
@@ -87,11 +97,58 @@
           </div>
         </div>
       `;
-      document.getElementById('logout').addEventListener('click', () => {
-        logout();
-        window.location.href = 'index.html';
+      document.getElementById('lock').addEventListener('click', () => {
+        localStorage.removeItem('itqan_dashboard_access');
+        renderLockView();
+      });
+
+      // جلب وعرض المساقات والمستخدمين (قراءة فقط حالياً)
+      import('./assets/js/api.js').then(({ getCourses, getUsers }) => {
+        getCourses().then(courses => {
+          const list = document.getElementById('courses-list');
+          list.innerHTML = courses.map(c => `<li>${c.title} - ${c.grade} (${c.units?.length || 0} وحدات)</li>`).join('');
+        }).catch(() => {
+          document.getElementById('courses-list').innerHTML = '<li>تعذر تحميل المساقات</li>';
+        });
+        getUsers().then(users => {
+          const list = document.getElementById('users-list');
+          list.innerHTML = users.map(u => `<li>${u.name} - ${u.role} ${u.phone ? '('+u.phone+')' : ''}</li>`).join('');
+        }).catch(() => {
+          document.getElementById('users-list').innerHTML = '<li>تعذر تحميل المستخدمين</li>';
+        });
       });
     }
+
+    function renderLockView() {
+      content.innerHTML = `
+        <div class="card" style="max-width: 480px;">
+          <h2>حماية لوحة التحكم</h2>
+          <p>أدخل كلمة المرور للوصول إلى لوحة التحكم.</p>
+          <label class="form-label">كلمة المرور</label>
+          <input type="password" id="dash-password" class="form-input" placeholder="••••••••" />
+          <button id="dash-enter" class="btn primary mt-2" style="width: 100%">دخول</button>
+          <div id="dash-error" class="alert danger mt-2" style="display:none"></div>
+        </div>
+      `;
+      document.getElementById('dash-enter').addEventListener('click', () => {
+        const p = document.getElementById('dash-password').value;
+        if (simpleHash(p) === DASH_HASH) {
+          localStorage.setItem('itqan_dashboard_access', DASH_HASH);
+          renderDashboard();
+        } else {
+          const e = document.getElementById('dash-error');
+          e.textContent = 'كلمة المرور غير صحيحة';
+          e.style.display = 'block';
+        }
+      });
+    }
+
+    function render() {
+      const ok = localStorage.getItem('itqan_dashboard_access') === DASH_HASH;
+      if (ok) renderDashboard(); else renderLockView();
+    }
+
+    render();
 
     const btn = document.getElementById('toggle-theme');
     btn?.addEventListener('click', () => {

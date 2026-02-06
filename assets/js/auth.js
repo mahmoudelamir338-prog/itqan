@@ -126,13 +126,16 @@ export async function login({ role, nationalId, phone, password }) {
   if (!role || !password) throw new Error('يرجى إدخال الدور وكلمة المرور');
   await ensureUsersLoaded();
   const users = JSON.parse(localStorage.getItem('itqan_users') || '[]');
+  // تطبيع المدخلات لتجنب المسافات أو الرموز غير الرقمية
+  const normalizedPhone = (phone || '').replace(/\s+/g, '');
+  const normalizedNationalId = (nationalId || '').replace(/\s+/g, '');
   let user;
   if (role === 'student') {
-    if (!nationalId) throw new Error('يرجى إدخال الرقم القومي للطالب');
-    user = users.find(u => u.role === 'student' && u.nationalId === nationalId);
+    if (!normalizedNationalId) throw new Error('يرجى إدخال الرقم القومي للطالب');
+    user = users.find(u => u.role === 'student' && String(u.nationalId) === String(normalizedNationalId));
   } else {
-    if (!phone) throw new Error('يرجى إدخال رقم الموبايل');
-    user = users.find(u => u.role === role && u.phone === phone);
+    if (!normalizedPhone) throw new Error('يرجى إدخال رقم الموبايل');
+    user = users.find(u => u.role === role && String(u.phone) === String(normalizedPhone));
   }
   if (!user) throw new Error('لا يوجد مستخدم مطابق للمدخلات');
   if (user.passwordHash !== simpleHash(password)) throw new Error('كلمة المرور غير صحيحة');
@@ -142,14 +145,36 @@ export async function login({ role, nationalId, phone, password }) {
 }
 
 export async function ensureUsersLoaded() {
-  const existing = localStorage.getItem('itqan_users');
-  if (existing && existing !== '[]') return;
+  const existingRaw = localStorage.getItem('itqan_users');
+  let existing = [];
+  try { existing = existingRaw ? JSON.parse(existingRaw) : []; } catch { existing = []; }
   try {
-    const users = await getUsers();
-    localStorage.setItem('itqan_users', JSON.stringify(users));
+    const remote = await getUsers();
+    // دمج بيانات الملف الخارجي مع المخزنة محلياً بحسب المعرّف مع الحفاظ على التقدم والإنجازات
+    const byId = new Map(existing.map(u => [u.id, u]));
+    for (const r of remote) {
+      const prev = byId.get(r.id);
+      if (prev) {
+        byId.set(r.id, {
+          ...prev,
+          ...r,
+          xp: prev.xp ?? r.xp ?? 0,
+          badges: prev.badges ?? r.badges ?? [],
+          enrolledCourses: prev.enrolledCourses ?? r.enrolledCourses ?? [],
+          completedLessons: prev.completedLessons ?? r.completedLessons ?? [],
+          linkedStudents: prev.linkedStudents ?? r.linkedStudents
+        });
+      } else {
+        byId.set(r.id, r);
+      }
+    }
+    const merged = Array.from(byId.values());
+    localStorage.setItem('itqan_users', JSON.stringify(merged));
   } catch (e) {
-    // لا نوقف التنفيذ؛ يمكن أن يبدأ بدون بيانات خارجية
-    localStorage.setItem('itqan_users', '[]');
+    // في حال الفشل، إن لم تكن هناك بيانات محلية، نهيئ كمصفوفة فارغة
+    if (!existingRaw || existingRaw === '[]') {
+      localStorage.setItem('itqan_users', '[]');
+    }
   }
 }
 
