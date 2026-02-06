@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>واجهة التعلم | إتقان</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/main.css" />
+  <link rel="stylesheet" href="./assets/css/components.css" />
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+</head>
+<body id="page-learning">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <img src="./assets/images/logo.png" alt="شعار اتقان" class="brand-logo" />
+        <span class="brand-name">إتقان</span>
+      </a>
+      <nav class="main-nav">
+        <a href="courses.html">المساقات</a>
+        <a href="dashboard.html" data-protected="true">لوحة التحكم</a>
+        <a href="login.html">تسجيل الدخول</a>
+        <a href="signup.html" class="btn primary">حساب جديد</a>
+        <button class="icon-btn" id="toggle-theme" title="الوضع الليلي">🌙</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="grid-2">
+      <div>
+        <video id="player" playsinline controls></video>
+      </div>
+      <aside>
+        <h3>الدروس</h3>
+        <div id="lessons" class="list lessons"></div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 إتقان - جميع الحقوق محفوظة</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+  <script type="module">
+    import { getCourseById } from './assets/js/api.js';
+    import { createLessonItem } from './assets/js/ui.js';
+    import { initAuthGuards, restoreThemePreference, completeLesson } from './assets/js/auth.js';
+
+    restoreThemePreference();
+    initAuthGuards();
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    const playerEl = document.getElementById('player');
+    const lessonsEl = document.getElementById('lessons');
+
+    const player = new Plyr('#player', { captions: { active: true } });
+
+    // حفظ واسترجاع نقطة التوقف لكل درس
+    function saveProgress(lessonId, time) {
+      const key = `itqan_progress_${lessonId}`;
+      localStorage.setItem(key, String(time));
+    }
+    function getProgress(lessonId) {
+      const key = `itqan_progress_${lessonId}`;
+      return Number(localStorage.getItem(key) || 0);
+    }
+
+    let currentLessonId = null;
+
+    function loadLesson(lesson) {
+      currentLessonId = lesson.id || `${id}-${lesson.title}`;
+      playerEl.src = lesson.video_url;
+      // إبراز الدرس الحالي
+      const items = Array.from(lessonsEl.querySelectorAll('.item'));
+      items.forEach(i => {
+        const lid = i.dataset.lessonId;
+        i.classList.toggle('current', lid === currentLessonId);
+      });
+      player.once('loadeddata', () => {
+        const t = getProgress(currentLessonId);
+        if (t > 0) player.currentTime = t;
+      });
+    }
+
+    // بناء قائمة الدروس والتفاعل
+    getCourseById(id).then(course => {
+      const allLessons = (course.modules || []).flatMap(m => m.lessons.map(l => ({...l, moduleTitle: m.title})));
+      allLessons.forEach((lesson, idx) => {
+        const item = createLessonItem(lesson);
+        // تخزين معرف الدرس داخل العنصر
+        item.dataset.lessonId = lesson.id || `${id}-${lesson.title}`;
+        item.addEventListener('click', () => loadLesson(lesson));
+        lessonsEl.appendChild(item);
+        // تعيين current للدرس الأول افتراضياً
+        if (idx === 0) item.classList.add('current');
+      });
+      if (allLessons[0]) loadLesson(allLessons[0]);
+    });
+
+    // عند تحديث الوقت نحفظ التقدم
+    player.on('timeupdate', () => {
+      if (currentLessonId) saveProgress(currentLessonId, player.currentTime);
+    });
+
+    // عند انتهاء الفيديو نعتبر الدرس مكتملاً وننتقل للبالتالي
+    player.on('ended', () => {
+      if (!currentLessonId) return;
+      completeLesson(currentLessonId);
+      const items = Array.from(lessonsEl.querySelectorAll('.item'));
+      const idx = items.findIndex(i => i.classList.contains('current'));
+      if (idx !== -1 && items[idx + 1]) items[idx + 1].click();
+    });
+
+    const btn = document.getElementById('toggle-theme');
+    btn?.addEventListener('click', () => {
+      const isLight = document.body.classList.toggle('light');
+      localStorage.setItem('itqan_theme', isLight ? 'light' : 'dark');
+    });
+  </script>
+</body>
+</html>

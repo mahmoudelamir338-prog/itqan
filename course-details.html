@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تفاصيل المساق | إتقان</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/main.css" />
+  <link rel="stylesheet" href="./assets/css/components.css" />
+</head>
+<body id="page-course-details">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <img src="./assets/images/logo.png" alt="شعار اتقان" class="brand-logo" />
+        <span class="brand-name">إتقان</span>
+      </a>
+      <nav class="main-nav">
+        <a href="courses.html">المساقات</a>
+        <a href="dashboard.html" data-protected="true">لوحة التحكم</a>
+        <a href="login.html">تسجيل الدخول</a>
+        <a href="signup.html" class="btn primary">حساب جديد</a>
+        <button class="icon-btn" id="toggle-theme" title="الوضع الليلي">🌙</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="course"></div>
+
+    <h2 class="mt-4">المنهج</h2>
+    <div id="curriculum" class="list"></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 إتقان - جميع الحقوق محفوظة</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { getCourseById } from './assets/js/api.js';
+    import { createLessonItem, escapeHtml } from './assets/js/ui.js';
+    import { initAuthGuards, restoreThemePreference } from './assets/js/auth.js';
+
+    restoreThemePreference();
+    initAuthGuards();
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    const courseEl = document.getElementById('course');
+    const curriculumEl = document.getElementById('curriculum');
+
+    getCourseById(id).then(course => {
+      if (!course) {
+        courseEl.innerHTML = `<div class="card">لم يتم العثور على المساق</div>`;
+        return;
+      }
+      courseEl.innerHTML = `
+        <div class="card">
+          <h1>${escapeHtml(course.title)}</h1>
+          <div class="meta mt-2">المحاضر: ${escapeHtml(course.instructor)} | تقييم: ⭐ ${Number(course.rating).toFixed(1)} | السعر: ${Number(course.price).toFixed(2)} ج.م</div>
+          <p class="mt-3">${escapeHtml(course.description)}</p>
+          <h3 class="mt-3">أهداف التعلم</h3>
+          <ul>
+            ${(course.learning_objectives || []).map(o => `<li>${escapeHtml(o)}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+
+      // المنهج
+      curriculumEl.classList.add('list', 'lessons');
+      (course.modules || []).forEach(m => {
+        const mTitle = document.createElement('h3');
+        mTitle.textContent = m.title;
+        curriculumEl.appendChild(mTitle);
+        (m.lessons || []).forEach(l => {
+          const item = createLessonItem(l);
+          curriculumEl.appendChild(item);
+        });
+      });
+    }).catch(err => {
+      courseEl.innerHTML = `<div class="card">فشل تحميل بيانات المساق: ${err.message}</div>`;
+    });
+
+    const btn = document.getElementById('toggle-theme');
+    btn?.addEventListener('click', () => {
+      const isLight = document.body.classList.toggle('light');
+      localStorage.setItem('itqan_theme', isLight ? 'light' : 'dark');
+    });
+  </script>
+</body>
+</html>

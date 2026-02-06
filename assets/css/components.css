@@ -1,0 +1,34 @@
+/* components.css - مكونات الواجهة */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); color: var(--color-text); background: rgba(255,255,255,0.04); text-decoration: none; cursor: pointer; transition: transform .08s ease, background .2s ease; }
+.btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-1px); }
+.btn.primary { background: var(--color-primary); border-color: transparent; color: #052e1b; font-weight: 700; }
+.btn.primary:hover { filter: brightness(1.1); }
+
+.card { display: flex; flex-direction: column; gap: 6px; }
+.card h3 { margin: 0 0 4px; font-size: 18px; }
+.card p { margin: 0; color: var(--color-muted); }
+
+.course-card { background: var(--color-surface); border: 1px solid rgba(255,255,255,0.08); box-shadow: var(--shadow); border-radius: var(--radius); overflow: hidden; display: grid; grid-template-columns: 160px 1fr; }
+.course-card img { width: 100%; height: 100%; object-fit: cover; }
+.course-card .info { padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+.course-card .title { font-weight: 700; }
+.course-card .meta { display: flex; flex-wrap: wrap; gap: 10px; color: var(--color-muted); font-size: 14px; }
+.course-card .actions { margin-top: 8px; display: flex; gap: 8px; }
+
+.list { display: grid; gap: 12px; }
+.list.lessons .item { background: var(--color-surface); border: 1px solid rgba(255,255,255,0.08); padding: 10px 12px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; }
+.list.lessons .item .title { font-weight: 600; }
+.list.lessons .item .meta { color: var(--color-muted); font-size: 13px; }
+.list.lessons .item.current { border-color: var(--color-primary); background: rgba(34, 197, 94, 0.1); }
+.input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: var(--color-text); }
+.form { display: grid; gap: 10px; }
+
+.nav-tabs { display: flex; gap: 6px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.nav-tabs .tab { padding: 8px 12px; border-radius: 8px 8px 0 0; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-bottom: none; }
+
+/* Utilities */
+.mt-2 { margin-top: 8px; }
+.mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 800px) { .grid-2 { grid-template-columns: 1fr; } }

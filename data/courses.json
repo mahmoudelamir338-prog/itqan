@@ -1,0 +1,252 @@
+[
+  {
+    "id": "egy-primary-g4",
+    "stage": "المرحلة الابتدائية",
+    "grade": "الصف الرابع الابتدائي",
+    "title": "المرحلة الابتدائية - الصف الرابع: منهج تجريبي",
+    "instructor": "فريق إتقان",
+    "rating": 4.6,
+    "price": 0,
+    "image": "./assets/images/grades/grade-4.svg",
+    "description": "مجموعة دروس تجريبية للصف الرابع الابتدائي تضم درسًا واحدًا من كل مادة أساسية وفق المنهج المصري.",
+    "learning_objectives": [
+      "التعرف على بنية المنهج المصري للمرحلة الابتدائية",
+      "تجربة واجهة التعلم والتنقل بين الدروس",
+      "حفظ التقدم تلقائيًا والانتقال للدرس التالي"
+    ],
+    "modules": [
+      {
+        "title": "اللغة العربية",
+        "lessons": [
+          {
+            "id": "egy-primary-g4-ar-1",
+            "title": "نص قصير: القراءة الممتعة",
+            "duration": "10 دقائق",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }
+        ]
+      },
+      {
+        "title": "الرياضيات",
+        "lessons": [
+          {
+            "id": "egy-primary-g4-ma-1",
+            "title": "مدخل إلى الكسور",
+            "duration": "8 دقائق",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }
+        ]
+      },
+      {
+        "title": "العلوم",
+        "lessons": [
+          {
+            "id": "egy-primary-g4-sc-1",
+            "title": "الكائنات الحية",
+            "duration": "9 دقائق",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }
+        ]
+      },
+      {
+        "title": "اللغة الإنجليزية",
+        "lessons": [
+          {
+            "id": "egy-primary-g4-en-1",
+            "title": "Greetings and Introductions",
+            "duration": "7 دقائق",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }
+        ]
+      },
+      {
+        "title": "الدراسات الاجتماعية",
+        "lessons": [
+          {
+            "id": "egy-primary-g4-ss-1",
+            "title": "بلدي مصر",
+            "duration": "6 دقائق",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }
+        ]
+      },
+      {
+        "title": "التربية الدينية",
+        "lessons": [
+          {
+            "id": "egy-primary-g4-re-1",
+            "title": "آداب المسلم",
+            "duration": "6 دقائق",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "egy-prep-g1",
+    "stage": "المرحلة الإعدادية",
+    "grade": "الصف الأول الإعدادي",
+    "title": "الإعدادية - الصف الأول: منهج تجريبي",
+    "instructor": "فريق إتقان",
+    "rating": 4.7,
+    "price": 0,
+    "image": "./assets/images/grades/grade-1.svg",
+    "description": "دروس تجريبية للصف الأول الإعدادي تشمل درسًا واحدًا من كل مادة أساسية.",
+    "learning_objectives": [
+      "التعرف على أساسيات منهج الإعدادية",
+      "تطوير مهارات المتعلم في كل مادة من خلال درس تمهيدي"
+    ],
+    "modules": [
+      {
+        "title": "اللغة العربية",
+        "lessons": [
+          {
+            "id": "egy-prep-g1-ar-1",
+            "title": "النحو: أنواع الجملة",
+            "duration": "12 دقائق",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }
+        ]
+      },
+      {
+        "title": "الرياضيات",
+        "lessons": [
+          {
+            "id": "egy-prep-g1-ma-1",
+            "title": "المعادلات البسيطة",
+            "duration": "10 دقائق",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }
+        ]
+      },
+      {
+        "title": "العلوم",
+        "lessons": [
+          {
+            "id": "egy-prep-g1-sc-1",
+            "title": "الطاقة والتحولات",
+            "duration": "11 دقائق",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }
+        ]
+      },
+      {
+        "title": "اللغة الإنجليزية",
+        "lessons": [
+          {
+            "id": "egy-prep-g1-en-1",
+            "title": "Simple Present Tense",
+            "duration": "9 دقائق",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }
+        ]
+      },
+      {
+        "title": "الدراسات الاجتماعية",
+        "lessons": [
+          {
+            "id": "egy-prep-g1-ss-1",
+            "title": "جغرافيا مصر",
+            "duration": "8 دقائق",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }
+        ]
+      },
+      {
+        "title": "التربية الدينية",
+        "lessons": [
+          {
+            "id": "egy-prep-g1-re-1",
+            "title": "سيرة النبي ﷺ",
+            "duration": "8 دقائق",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "egy-sec-g1",
+    "stage": "المرحلة الثانوية",
+    "grade": "الصف الأول الثانوي",
+    "title": "الثانوية - الصف الأول: منهج تجريبي",
+    "instructor": "فريق إتقان",
+    "rating": 4.8,
+    "price": 0,
+    "image": "./assets/images/grades/grade-1.svg",
+    "description": "تجربة للصف الأول الثانوي تتضمن درسًا تمهيديًا لكل مادة أساسية في المنهج المصري.",
+    "learning_objectives": [
+      "فهم بنية المرحلة الثانوية على النظام الحديث",
+      "التمكن من استخدام المنصة في عرض الدروس"
+    ],
+    "modules": [
+      {
+        "title": "اللغة العربية",
+        "lessons": [
+          {
+            "id": "egy-sec-g1-ar-1",
+            "title": "بلاغة: الصور البيانية",
+            "duration": "13 دقائق",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }
+        ]
+      },
+      {
+        "title": "الرياضيات",
+        "lessons": [
+          {
+            "id": "egy-sec-g1-ma-1",
+            "title": "التفاضل: مفهوم النهاية",
+            "duration": "12 دقائق",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }
+        ]
+      },
+      {
+        "title": "الفيزياء",
+        "lessons": [
+          {
+            "id": "egy-sec-g1-ph-1",
+            "title": "حركة الأجسام",
+            "duration": "11 دقائق",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }
+        ]
+      },
+      {
+        "title": "الكيمياء",
+        "lessons": [
+          {
+            "id": "egy-sec-g1-ch-1",
+            "title": "الروابط الكيميائية",
+            "duration": "10 دقائق",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }
+        ]
+      },
+      {
+        "title": "الأحياء",
+        "lessons": [
+          {
+            "id": "egy-sec-g1-bi-1",
+            "title": "الخلية ومكوناتها",
+            "duration": "10 دقائق",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }
+        ]
+      },
+      {
+        "title": "اللغة الإنجليزية",
+        "lessons": [
+          {
+            "id": "egy-sec-g1-en-1",
+            "title": "Passive Voice",
+            "duration": "9 دقائق",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }
+        ]
+      }
+    ]
+  }
+]

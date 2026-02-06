@@ -1,0 +1,37 @@
+[
+  {
+    "id": "owner_1",
+    "role": "owner",
+    "name": "مالك المنصة",
+    "phone": "01099999999",
+    "passwordHash": "h_1521122624"
+  },
+  {
+    "id": "s_1001",
+    "role": "student",
+    "name": "طالب تجريبي",
+    "nationalId": "30001234567890",
+    "phone": "01000000001",
+    "passwordHash": "h_1450575459",
+    "xp": 0,
+    "badges": [],
+    "enrolledCourses": [],
+    "completedLessons": []
+  },
+  {
+    "id": "p_2001",
+    "role": "parent",
+    "name": "ولي أمر تجريبي",
+    "phone": "01000000002",
+    "passwordHash": "h_1450575459",
+    "linkedStudents": ["s_1001"]
+  },
+  {
+    "id": "t_3001",
+    "role": "teacher",
+    "name": "معلم تجريبي",
+    "phone": "01000000003",
+    "passwordHash": "h_1450575459",
+    "subjects": ["الرياضيات"]
+  }
+]
