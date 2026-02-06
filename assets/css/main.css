@@ -1,81 +1,16 @@
-/* Modern Light Theme for Itqan Platform */
-:root {
-  --color-bg: #f7f9fc;
-  --color-surface: #ffffff;
-  --color-text: #0f172a;
-  --color-muted: #5b6b83;
-  --color-primary: #2D7FFF;
-  --color-primary-600: #1f5fd6;
-  --color-accent: #00C2A8;
-  --color-border: #e5eaf2;
-  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
-  --shadow-md: 0 8px 24px rgba(16, 24, 40, 0.08);
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-  --container: 1100px;
-}
-
-* { box-sizing: border-box; }
-html { font-size: 16px; }
-body {
-  margin: 0;
-  font-family: 'Cairo', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color: var(--color-text);
-  background: linear-gradient(180deg, #fafcff 0%, var(--color-bg) 100%);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-img { max-width: 100%; display: block; }
-a { color: var(--color-primary); text-decoration: none; }
-a:hover { text-decoration: underline; }
-
-.container { width: 100%; max-width: var(--container); margin-inline: auto; padding: 0 20px; }
-.mt-2 { margin-top: 0.75rem; }
-.mt-3 { margin-top: 1rem; }
-.mt-4 { margin-top: 1.5rem; }
-
-/* Header */
-.site-header {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(255,255,255,0.8);
-  backdrop-filter: saturate(180%) blur(12px);
-  border-bottom: 1px solid var(--color-border);
-}
-.header-inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; }
-.brand { display: flex; align-items: center; gap: 10px; }
-.brand-logo { width: 40px; height: 40px; border-radius: 10px; box-shadow: var(--shadow-sm); }
-.brand-name { font-weight: 700; font-size: 1.25rem; letter-spacing: 0.2px; }
-
-.main-nav { display: flex; gap: 14px; align-items: center; }
-.main-nav a { color: var(--color-text); padding: 8px 12px; border-radius: 10px; }
-.main-nav a:hover { background: #f0f4fb; }
-
-/* Footer */
-.site-footer { margin-top: 40px; border-top: 1px solid var(--color-border); background: var(--color-surface); }
-.site-footer .container { padding: 24px 20px; color: var(--color-muted); }
-
-/* Section titles */
-h1, h2, h3 { color: var(--color-text); margin: 0; }
-h1 { font-size: 2rem; }
-h2 { font-size: 1.5rem; margin-top: 24px; }
-h3 { font-size: 1.25rem; margin-top: 18px; }
-
-/* Lists generic */
-.list { display: grid; grid-template-columns: 1fr; gap: 14px; }
-
-/* Hero utilities for home */
-.hero { padding: 48px 0; background: linear-gradient(135deg, #eef3ff 0%, #f7fbff 100%); border-bottom: 1px solid var(--color-border); }
-.hero .headline { font-size: 2rem; font-weight: 700; }
-.hero .sub { color: var(--color-muted); margin-top: 10px; }
-
-/* Responsive */
-@media (min-width: 768px) {
-  .list.cols-2 { grid-template-columns: repeat(2, 1fr); }
-  .list.cols-3 { grid-template-columns: repeat(3, 1fr); }
-  h1 { font-size: 2.25rem; }
-}
-@media (min-width: 1024px) {
-  h1 { font-size: 2.5rem; }
-}
+body { font-family: 'Cairo', sans-serif; margin:0; padding:0; background:#f5f5f5; color:#222; }
+.container { max-width:1200px; margin:0 auto; padding:1rem; }
+.site-header, .site-footer { background:#222; color:#fff; padding:1rem 0; }
+.site-header .brand-name { margin-left:0.5rem; font-weight:700; }
+.site-header a, .site-footer a { color:#fff; text-decoration:none; margin-left:1rem; }
+.btn { padding:0.5rem 1rem; border:none; cursor:pointer; }
+.btn.primary { background:#0066ff; color:#fff; }
+.btn.danger { background:#ff3333; color:#fff; }
+.card { background:#fff; padding:1rem; border-radius:6px; box-shadow:0 2px 4px rgba(0,0,0,0.1); margin-bottom:1rem; }
+.list { list-style:none; padding:0; }
+.list li { padding:0.5rem 0; border-bottom:1px solid #eee; }
+input.input, textarea.textarea, select.input { width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:4px; }
+.mt-2 { margin-top:0.5rem; } .mt-3 { margin-top:1rem; } .mt-4 { margin-top:1.5rem; }
+.grid { display:grid; gap:1rem; }
+.grid-2 { grid-template-columns: 2fr 1fr; display:grid; gap:1rem; }
+.grid-3 { grid-template-columns: repeat(3,1fr); display:grid; gap:1rem; }
