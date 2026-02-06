@@ -3,14 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>منصة إتقان | الرئيسية</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>إتقان</title>
   <link rel="stylesheet" href="./assets/css/main.css" />
   <link rel="stylesheet" href="./assets/css/components.css" />
 </head>
-<body id="page-home">
+<body>
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="index.html">
@@ -22,95 +19,17 @@
         <a href="dashboard.html" data-protected="true">لوحة التحكم</a>
         <a href="login.html">تسجيل الدخول</a>
         <a href="signup.html" class="btn primary">حساب جديد</a>
-        <button class="icon-btn" id="toggle-theme" title="الوضع الليلي">🌙</button>
       </nav>
     </div>
   </header>
-
-  <main>
-    <section class="hero">
-      <div class="container hero-inner">
-        <div class="hero-content">
-          <h1>اتعلم بذكاء، اتقن بسرعة</h1>
-          <p>منصة تعليمية إلكترونية مبنية بمعمارية Jamstack لأداء فائق وتجربة استخدام ممتازة.</p>
-          <div class="hero-actions">
-            <a href="courses.html" class="btn primary">ابدأ الآن</a>
-            <a href="dashboard.html" class="btn" data-protected="true">لوحة التحكم</a>
-          </div>
-        </div>
-        <div class="hero-media">
-          <img src="./assets/images/logo.png" alt="لوجو إتقان" class="hero-logo" />
-        </div>
-      </div>
-    </section>
-
-    <section class="features">
-      <div class="container grid-3">
-        <div class="card">
-          <h3>سرعة فائقة</h3>
-          <p>ملفات ثابتة تُحمّل بسرعة كبيرة جدًا لراحة وتجربة أفضل.</p>
-        </div>
-        <div class="card">
-          <h3>أمان أعلى</h3>
-          <p>بدون قواعد بيانات مباشرة، مخاطر أقل وهجمات أقل.</p>
-        </div>
-        <div class="card">
-          <h3>تكلفة منخفضة</h3>
-          <p>استضافة على GitHub Pages أو Netlify أو Vercel بسهولة.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="features">
-      <div class="container">
-        <div class="card" style="max-width:700px;margin:0 auto;">
-          <h3>تواصل معنا</h3>
-          <p>أرسل لنا رسالتك وسنعاود الاتصال بك في أقرب وقت.</p>
-          <form id="contact-form" class="form mt-2">
-            <div class="form-row">
-              <div>
-                <label class="label" for="c-name">الاسم الكامل</label>
-                <input id="c-name" type="text" class="input" placeholder="اسمك" required />
-              </div>
-              <div>
-                <label class="label" for="c-email">البريد الإلكتروني</label>
-                <input id="c-email" type="email" class="input" placeholder="you@example.com" required />
-              </div>
-            </div>
-            <div>
-              <label class="label" for="c-message">الرسالة</label>
-              <textarea id="c-message" class="textarea" placeholder="اكتب رسالتك هنا" required></textarea>
-            </div>
-            <button type="submit" class="btn primary">إرسال</button>
-            <div id="c-status" class="alert success mt-2" style="display:none">تم إرسال الرسالة بنجاح</div>
-          </form>
-        </div>
-      </div>
-    </section>
+  <main class="container">
+    <h1>مرحباً بك في إتقان</h1>
+    <p>هنا تجد كل المساقات والدروس التي يمكنك التعلم منها.</p>
   </main>
-
   <footer class="site-footer">
     <div class="container">
       <p>© 2026 إتقان - جميع الحقوق محفوظة</p>
     </div>
   </footer>
-
-  <script type="module" src="./assets/js/app.js"></script>
-  <script>
-    document.getElementById('contact-form')?.addEventListener('submit', function(e){
-      e.preventDefault();
-      const name = document.getElementById('c-name').value.trim();
-      const email = document.getElementById('c-email').value.trim();
-      const message = document.getElementById('c-message').value.trim();
-      if (!name || !email || !message) { return; }
-      const submissions = JSON.parse(localStorage.getItem('itqan_contact') || '[]');
-      submissions.push({ id: 'c_'+Date.now(), name, email, message });
-      localStorage.setItem('itqan_contact', JSON.stringify(submissions));
-      const status = document.getElementById('c-status');
-      status.style.display = 'block';
-      this.reset();
-      setTimeout(()=>{ status.style.display = 'none'; }, 3000);
-    });
-  </script>
 </body>
 </html>
