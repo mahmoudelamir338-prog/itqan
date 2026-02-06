@@ -22,7 +22,6 @@
         <a href="dashboard.html" class="active">لوحة التحكم</a>
         <a href="login.html">تسجيل الدخول</a>
         <a href="signup.html" class="btn primary">حساب جديد</a>
-        <button class="icon-btn" id="toggle-theme" title="الوضع الليلي">🌙</button>
       </nav>
     </div>
   </header>
@@ -44,7 +43,7 @@
     restoreThemePreference();
 
     const content = document.getElementById('content');
-    const DASH_HASH = 'h_506210108'; // hash لـ كلمة المرور Ma@0100166
+    const DASH_PASSWORD = 'Ma@0100166';
 
     function simpleHash(str) {
       let h = 0;
@@ -54,6 +53,7 @@
       }
       return 'h_' + Math.abs(h);
     }
+    const DASH_HASH = simpleHash(DASH_PASSWORD);
 
     function renderDashboard() {
       content.innerHTML = `
@@ -150,11 +150,7 @@
 
     render();
 
-    const btn = document.getElementById('toggle-theme');
-    btn?.addEventListener('click', () => {
-      const isLight = document.body.classList.toggle('light');
-      localStorage.setItem('itqan_theme', isLight ? 'light' : 'dark');
-    });
+
   </script>
 </body>
 </html>
