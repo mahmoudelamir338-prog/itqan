@@ -32,24 +32,29 @@
     <div class="card mt-2" style="max-width: 520px;">
       <form id="signup-form">
         <label class="form-label">الاسم الكامل</label>
-        <input type="text" id="name" class="form-input" placeholder="الاسم" required />
+        <input type="text" id="name" class="form-input input" placeholder="الاسم" required />
         <label class="form-label mt-2">اختر الدور</label>
-        <select id="role" class="form-input" required>
-          <option value="" disabled selected>اختر الدور</option>
-          <option value="student">طالب</option>
-          <option value="parent">ولي أمر</option>
-          <option value="teacher">معلم</option>
-        </select>
+        <div id="role-group" class="segmented">
+          <input type="radio" id="role-student" name="role" value="student" />
+          <label for="role-student">طالب</label>
+          <input type="radio" id="role-parent" name="role" value="parent" />
+          <label for="role-parent">ولي أمر</label>
+          <input type="radio" id="role-teacher" name="role" value="teacher" />
+          <label for="role-teacher">معلم</label>
+        </div>
         <div id="field-nationalId" class="mt-2" style="display:none">
           <label class="form-label">الرقم القومي (للطلاب)</label>
-          <input type="text" id="nationalId" class="form-input" placeholder="مثال: 30201234567890" />
+          <input type="text" id="nationalId" class="form-input input" placeholder="مثال: 30201234567890" />
         </div>
         <div id="field-phone" class="mt-2" style="display:none">
            <label class="form-label">رقم الموبايل</label>
-           <input type="tel" id="phone" class="form-input" placeholder="01012345678" />
+           <input type="tel" id="phone" class="form-input input" placeholder="01012345678" />
          </div>
         <label class="form-label mt-2">كلمة المرور</label>
-        <input type="password" id="password" class="form-input" placeholder="••••••••" required />
+        <div class="password-field">
+          <input type="password" id="password" class="form-input input" placeholder="••••••••" required />
+          <button type="button" class="toggle-pass" id="toggle-pass" aria-label="إظهار/إخفاء كلمة المرور">👁</button>
+        </div>
         <button type="submit" class="btn primary mt-3" style="width: 100%">إنشاء الحساب</button>
       </form>
       <div id="error" class="alert danger mt-2" style="display:none"></div>
@@ -64,33 +69,45 @@
 
   <script type="module">
     import { signup, restoreThemePreference, initAuthGuards, routeToDashboardByRole } from './assets/js/auth.js';
+    import { initFirebase } from './assets/js/firebase.js';
 
     restoreThemePreference();
     initAuthGuards();
+    initFirebase();
 
     const form = document.getElementById('signup-form');
     const errorEl = document.getElementById('error');
     const btn = document.getElementById('toggle-theme');
-    const roleEl = document.getElementById('role');
+    const roleGroup = document.getElementById('role-group');
     const fieldNationalId = document.getElementById('field-nationalId');
     const fieldPhone = document.getElementById('field-phone');
 
-    roleEl.addEventListener('change', () => {
-      const role = roleEl.value;
+    const getRole = () => {
+      const checked = document.querySelector('input[name="role"]:checked');
+      return checked ? checked.value : '';
+    };
+
+    roleGroup.addEventListener('change', () => {
+      const role = getRole();
       if (role === 'student') {
         fieldNationalId.style.display = 'block';
         fieldPhone.style.display = 'none';
-      } else {
+      } else if (role) {
         fieldNationalId.style.display = 'none';
         fieldPhone.style.display = 'block';
       }
+    });
+
+    document.getElementById('toggle-pass')?.addEventListener('click', () => {
+      const inp = document.getElementById('password');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
     });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       errorEl.style.display = 'none';
       const name = document.getElementById('name').value.trim();
-      const role = roleEl.value;
+      const role = getRole();
       const nationalId = document.getElementById('nationalId').value.trim();
       const phone = document.getElementById('phone').value.trim();
       const password = document.getElementById('password').value;

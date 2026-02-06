@@ -38,9 +38,15 @@
   </footer>
 
   <script type="module">
-    import { restoreThemePreference } from './assets/js/auth.js';
-
-    restoreThemePreference();
+    // حارس الدور: يسمح فقط لمالك النظام
+    const rawUser = localStorage.getItem('itqan_currentUser');
+    let currentUser = null;
+    try { currentUser = rawUser ? JSON.parse(rawUser) : null; } catch { currentUser = null; }
+    if (!currentUser) {
+      window.location.href = 'login.html';
+    } else if (currentUser.role !== 'owner') {
+      window.location.href = 'index.html';
+    }
 
     const content = document.getElementById('content');
     const DASH_PASSWORD = 'Ma@0100166';
@@ -102,19 +108,95 @@
         renderLockView();
       });
 
-      // جلب وعرض المساقات والمستخدمين (قراءة فقط حالياً)
-      import('./assets/js/api.js').then(({ getCourses, getUsers }) => {
-        getCourses().then(courses => {
-          const list = document.getElementById('courses-list');
-          list.innerHTML = courses.map(c => `<li>${c.title} - ${c.grade} (${c.units?.length || 0} وحدات)</li>`).join('');
-        }).catch(() => {
-          document.getElementById('courses-list').innerHTML = '<li>تعذر تحميل المساقات</li>';
+      // جلب وعرض المساقات والمستخدمين + ربط الأزرار (CRUD)
+      import('./assets/js/api.js').then(({ getCourses, getUsers, addCourse, updateCourse, deleteCourse, updateUserRole, toggleUserBan }) => {
+        const coursesListEl = document.getElementById('courses-list');
+        const usersListEl = document.getElementById('users-list');
+
+        async function refreshCourses() {
+          try {
+            const courses = await getCourses();
+            coursesListEl.innerHTML = courses.map(c => `<li>${c.title} - ${c.grade || ''} (${c.units?.length || 0} وحدات) [id: ${c.id}]</li>`).join('');
+          } catch {
+            coursesListEl.innerHTML = '<li>تعذر تحميل المساقات</li>';
+          }
+        }
+        async function refreshUsers() {
+          try {
+            const users = await getUsers();
+            usersListEl.innerHTML = users.map(u => `<li>${u.name} - ${u.role}${u.phone ? ' ('+u.phone+')' : ''}${u.banned ? ' [محظور]' : ''} [id: ${u.id}]</li>`).join('');
+          } catch {
+            usersListEl.innerHTML = '<li>تعذر تحميل المستخدمين</li>';
+          }
+        }
+
+        refreshCourses();
+        refreshUsers();
+
+        // إدارة المساقات
+        document.getElementById('add-course')?.addEventListener('click', () => {
+          const title = prompt('عنوان المساق:');
+          if (!title) return;
+          const grade = prompt('المرحلة/الصف الدراسي (اختياري):') || '';
+          const instructor = prompt('اسم المحاضر:') || '';
+          const priceStr = prompt('السعر بالجنيه (اختياري):') || '0';
+          const price = Number(priceStr) || 0;
+          const description = prompt('وصف مختصر (اختياري):') || '';
+          const image = './assets/images/logo.png';
+          const newCourse = { title, grade, instructor, price, description, image };
+          const created = addCourse(newCourse);
+          alert('تمت إضافة المساق. المعرّف: ' + created.id);
+          refreshCourses();
         });
-        getUsers().then(users => {
-          const list = document.getElementById('users-list');
-          list.innerHTML = users.map(u => `<li>${u.name} - ${u.role} ${u.phone ? '('+u.phone+')' : ''}</li>`).join('');
-        }).catch(() => {
-          document.getElementById('users-list').innerHTML = '<li>تعذر تحميل المستخدمين</li>';
+
+        document.getElementById('edit-course')?.addEventListener('click', async () => {
+          const id = prompt('أدخل معرف المساق المراد تعديله:');
+          if (!id) return;
+          const courses = await getCourses();
+          const c = courses.find(x => String(x.id) === String(id));
+          if (!c) { alert('لم يتم العثور على مساق بهذا المعرف'); return; }
+          const title = prompt('عنوان المساق الجديد (اتركه فارغًا للإبقاء):', c.title) || c.title;
+          const grade = prompt('المرحلة/الصف الدراسي الجديد (اتركه فارغًا):', c.grade || '') || c.grade;
+          const instructor = prompt('اسم المحاضر الجديد (اتركه فارغًا):', c.instructor || '') || c.instructor;
+          const priceStr = prompt('السعر الجديد (اتركه كما هو):', String(c.price ?? 0)) || String(c.price ?? 0);
+          const price = Number(priceStr) || (c.price ?? 0);
+          const description = prompt('وصف مختصر جديد (اتركه فارغًا):', c.description || '') || c.description;
+          const updated = updateCourse({ ...c, id, title, grade, instructor, price, description });
+          alert('تم تعديل المساق: ' + updated.title);
+          refreshCourses();
+        });
+
+        document.getElementById('delete-course')?.addEventListener('click', () => {
+          const id = prompt('أدخل معرف المساق المراد حذفه:');
+          if (!id) return;
+          if (confirm('تأكيد حذف المساق؟')) {
+            deleteCourse(id);
+            alert('تم حذف المساق');
+            refreshCourses();
+          }
+        });
+
+        // إدارة المستخدمين
+        document.getElementById('list-users')?.addEventListener('click', () => {
+          refreshUsers();
+        });
+        document.getElementById('change-role')?.addEventListener('click', () => {
+          const key = prompt('أدخل رقم الموبايل أو معرف المستخدم:');
+          if (!key) return;
+          const role = prompt('الدور الجديد (student/parent/teacher/owner):');
+          if (!role) return;
+          const ok = updateUserRole(key, role);
+          alert(ok ? 'تم تغيير الدور' : 'تعذر العثور على المستخدم');
+          refreshUsers();
+        });
+        document.getElementById('ban-user')?.addEventListener('click', () => {
+          const key = prompt('أدخل رقم الموبايل أو معرف المستخدم:');
+          if (!key) return;
+          const action = prompt('اكتب "ban" للحظر أو "unban" للإلغاء:', 'ban');
+          const banned = (action || 'ban').toLowerCase() === 'ban';
+          const ok = toggleUserBan(key, banned);
+          alert(ok ? (banned ? 'تم حظر المستخدم' : 'تم إلغاء الحظر') : 'تعذر العثور على المستخدم');
+          refreshUsers();
         });
       });
     }
@@ -125,7 +207,10 @@
           <h2>حماية لوحة التحكم</h2>
           <p>أدخل كلمة المرور للوصول إلى لوحة التحكم.</p>
           <label class="form-label">كلمة المرور</label>
-          <input type="password" id="dash-password" class="form-input" placeholder="••••••••" />
+          <div class="password-field">
+            <input type="password" id="dash-password" class="form-input input" placeholder="••••••••" />
+            <button type="button" class="toggle-pass" id="toggle-dash-pass" aria-label="إظهار/إخفاء كلمة المرور">👁</button>
+          </div>
           <button id="dash-enter" class="btn primary mt-2" style="width: 100%">دخول</button>
           <div id="dash-error" class="alert danger mt-2" style="display:none"></div>
         </div>
@@ -140,6 +225,10 @@
           e.textContent = 'كلمة المرور غير صحيحة';
           e.style.display = 'block';
         }
+      });
+      document.getElementById('toggle-dash-pass')?.addEventListener('click', () => {
+        const inp = document.getElementById('dash-password');
+        inp.type = inp.type === 'password' ? 'text' : 'password';
       });
     }
 
